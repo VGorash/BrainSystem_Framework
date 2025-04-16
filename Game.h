@@ -39,6 +39,8 @@ protected:
   bool m_falstartEnabled;
 
   Timer m_delayTimer;
+  
+  unsigned long m_startTime;
 
   AppChangeType m_changeNeeded = AppChangeType::None;
 };

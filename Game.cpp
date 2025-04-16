@@ -85,6 +85,7 @@ void Game::processCountdown(Hal* hal, GameDisplayInfo& info)
   
   if(buttonState.player >= 0)
   {
+	info.pressTime = hal->getTimeMillis() - m_startTime;
     press(hal, info, buttonState.player);
     return;
   }
@@ -116,6 +117,7 @@ void Game::start(Hal* hal, GameDisplayInfo& info)
 {
   m_state = GameState::Countdown;
   m_displayDirty = true;
+  m_startTime = hal->getTimeMillis();
   hal->signalLedOn();
   hal->sound(HalSound::Start);
 }
