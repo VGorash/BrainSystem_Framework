@@ -85,7 +85,7 @@ void Game::processCountdown(Hal* hal, GameDisplayInfo& info)
   
   if(buttonState.player >= 0)
   {
-	info.pressTime = hal->getTimeMillis() - m_startTime;
+    info.pressTime = hal->getTimeMillis() - m_startTime;
     press(hal, info, buttonState.player);
     return;
   }
