@@ -8,10 +8,22 @@
 namespace vgs
 {
 
+struct GameTime
+{
+    int primary = -1; // main mode duration
+    int secondary = -1; // second mode duration
+};
+
+struct GameConfig
+{
+    bool falstartEnabled = false;
+    GameTime time;
+};
+
 class Game : public App
 {
 public:
-  Game(bool falstartEnabled);
+  Game(const GameConfig& config);
 
   void init(Hal* hal) override;
   void tick(Hal* hal) override;
@@ -36,7 +48,7 @@ protected:
   GameState m_state = GameState::Idle;
   bool m_displayDirty = true;
 
-  bool m_falstartEnabled;
+  GameConfig m_config;
 
   Timer m_delayTimer;
   

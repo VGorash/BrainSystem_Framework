@@ -9,7 +9,11 @@ namespace vgs
 class BrainRingGame : public JeopardyGame
 {
 public:
-  BrainRingGame(bool falstartEnabled);
+  BrainRingGame(const GameConfig& config);
+
+  void init(Hal* hal) override;
+
+  static GameTime getDefaultTime();
 
 protected:
   void processPress(Hal* hal, GameDisplayInfo& info) override;

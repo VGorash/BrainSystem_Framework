@@ -1,13 +1,21 @@
 #include "JeopardyGame.h"
 
-#define JEOPARDY_GAME_TIME 7
-
 using namespace vgs;
 
-JeopardyGame::JeopardyGame(bool falstartEnabled) : Game(falstartEnabled)
+JeopardyGame::JeopardyGame(const GameConfig& config) : Game(config)
 {
   m_gameTimer.setPeriodMode(true);
 }
+
+
+void JeopardyGame::init(Hal* hal)
+{
+    if (m_config.time.primary < 0)
+    {
+        m_config.time = getDefaultTime();
+    }
+}
+
 
 void JeopardyGame::processCountdown(Hal* hal, GameDisplayInfo& info)
 {
@@ -32,7 +40,7 @@ void JeopardyGame::processCountdown(Hal* hal, GameDisplayInfo& info)
 
 void JeopardyGame::start(Hal* hal, GameDisplayInfo& info)
 {
-  m_secondsLeft = JEOPARDY_GAME_TIME;
+  m_secondsLeft = m_config.time.primary;
   info.gameTime = m_secondsLeft;
   m_gameTimer.start(hal);
 
@@ -56,4 +64,12 @@ void JeopardyGame::press(Hal* hal, GameDisplayInfo& info, int player)
 const char* JeopardyGame::getName()
 {
   return "СВОЯ ИГРА";
+}
+
+GameTime JeopardyGame::getDefaultTime()
+{
+  GameTime time;
+  time.primary = 7; // default game time
+
+  return time;
 }

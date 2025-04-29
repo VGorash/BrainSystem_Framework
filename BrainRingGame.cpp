@@ -1,15 +1,21 @@
 #include "BrainRingGame.h"
 
-#define BRAIN_RING_TIME 60
-#define BRAIN_RING_WRONG_ANSWER_TIME 20
-#define BRAIN_RING_SIGNAL_TIME 10
-#define BRAIN_RING_TICKS_TIME 5
+#define SIGNAL_TIME 10
+#define TICKS_TIME 5
 
 using namespace vgs;
 
-BrainRingGame::BrainRingGame(bool falstartEnabled) : JeopardyGame(falstartEnabled)
-{
+BrainRingGame::BrainRingGame(const GameConfig& config) : JeopardyGame(config)
+{    
+    // do nothing
+}
 
+void BrainRingGame::init(Hal* hal)
+{
+    if (m_config.time.primary < 0 || m_config.time.secondary < 0)
+    {
+        m_config.time = getDefaultTime();
+    }
 }
 
 void BrainRingGame::processPress(Hal* hal, GameDisplayInfo& info)
@@ -33,12 +39,12 @@ void BrainRingGame::processCountdown(Hal* hal, GameDisplayInfo& info)
     m_secondsLeft--;
     m_displayDirty = true;
 
-    if(m_secondsLeft == BRAIN_RING_SIGNAL_TIME)
+    if(m_secondsLeft == SIGNAL_TIME)
     {
       hal->sound(HalSound::Signal);
     }
 
-    if(m_secondsLeft <= BRAIN_RING_TICKS_TIME)
+    if(m_secondsLeft <= TICKS_TIME)
     {
       hal->sound(HalSound::Tick);
     }
@@ -58,7 +64,7 @@ void BrainRingGame::processCountdown(Hal* hal, GameDisplayInfo& info)
 
 void BrainRingGame::start(Hal* hal, GameDisplayInfo& info)
 {
-  m_secondsLeft = m_state == GameState::Press ? BRAIN_RING_WRONG_ANSWER_TIME : BRAIN_RING_TIME;
+  m_secondsLeft = m_state == GameState::Press ? m_config.time.secondary : m_config.time.primary;
 
   info.gameTime = m_secondsLeft;
   m_gameTimer.start(hal);
@@ -69,4 +75,13 @@ void BrainRingGame::start(Hal* hal, GameDisplayInfo& info)
 const char* BrainRingGame::getName()
 {
   return "БРЕЙН-РИНГ";
+}
+
+static GameTime BrainRingGame::getDefaultTime()
+{
+  GameTime time;
+  time.primary = 60; // default game time
+  time.secondary = 20; // default wrong answer time
+
+  return time;
 }

@@ -9,7 +9,11 @@ namespace vgs
 class JeopardyGame : public Game
 {
 public:
-  JeopardyGame(bool falstartEnabled);
+  JeopardyGame(const GameConfig& config);
+
+  void init(Hal* hal) override;
+
+  static GameTime getDefaultTime();
 
 protected:
   void processCountdown(Hal* hal, GameDisplayInfo& info) override;

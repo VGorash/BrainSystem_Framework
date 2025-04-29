@@ -2,7 +2,7 @@
 
 using namespace vgs;
 
-Game::Game(bool falstartEnabled) : m_falstartEnabled(falstartEnabled)
+Game::Game(const GameConfig& config) : m_config(config)
 {
   // do nothing
 }
@@ -23,6 +23,8 @@ void Game::tick(Hal* hal)
 
   if(hal->getButtonState().menu)
   {
+    hal->sound(HalSound::None);
+    hal->ledsOff();
     m_changeNeeded = AppChangeType::Menu;
     return;
   }
@@ -48,7 +50,7 @@ void Game::tick(Hal* hal)
   if(m_displayDirty)
   {
     info.name = getName();
-    info.falstart_enabled = m_falstartEnabled;
+    info.falstart_enabled = m_config.falstartEnabled;
     info.state = m_state;
 
     hal->updateDisplay(info);
@@ -62,7 +64,7 @@ void Game::processIdle(Hal* hal, GameDisplayInfo& info)
 
   if(buttonState.player >= 0)
   {
-    if(m_falstartEnabled)
+    if(m_config.falstartEnabled)
     {
       falstart(hal, info, buttonState.player);
     }
