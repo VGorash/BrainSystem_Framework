@@ -25,7 +25,7 @@ enum class GameState
   Falstart
 };
 
-typedef struct GameDisplayInfo
+struct GameDisplayInfo
 {
   const char* name = "";
   bool falstart_enabled = false;
@@ -34,21 +34,21 @@ typedef struct GameDisplayInfo
   int pressTime = -1;
   int player = -1;
   const char* custom = "";
-} GameDisplayInfo;
+};
 
-typedef struct SettingsDisplayInfo
+struct SettingsDisplayInfo
 {
   const Settings* settings = nullptr;
   bool edit_mode = true;
-} SettingsDisplayInfo;
+};
 
-typedef struct CustomDisplayInfo
+struct CustomDisplayInfo
 {
   const char* name = "";
   const void* data = nullptr;
-} CustomDisplayInfo;
+};
 
-typedef struct ButtonState
+struct ButtonState
 {
   bool start = false;
   bool stop = false;
@@ -56,7 +56,7 @@ typedef struct ButtonState
   bool menu = false;
   int custom = -1;
   int player = -1;
-} ButtonState;
+};
 
 class Hal
 {

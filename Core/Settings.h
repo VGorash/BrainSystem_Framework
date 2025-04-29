@@ -4,254 +4,97 @@
 namespace vgs
 {
 
-class SettingsItem
+class ISettingsItem
 {
 friend class Settings;
+
 public:
-  SettingsItem(const char* name, int numValues, const char* const* values) : m_numValues(numValues)
-  {
-    m_name = new char[strlenImpl(name) + 1];
-    strcpyImpl(m_name, name);
+  virtual const char* getName() const = 0;
+  virtual int getCounter() const = 0;
+  virtual const char* getValue() const = 0;
 
-    m_values = new char*[numValues];
+  virtual void increment() = 0;
+  virtual void decrement() = 0;
 
-    for(int i=0; i<numValues; i++)
-    {
-      m_values[i] = new char[strlenImpl(values[i]) + 1];
-      strcpyImpl(m_values[i], values[i]);
-    }
+  virtual bool set(int value) = 0;
 
-    m_counter = 0;
-  }
+protected:
+  virtual ISettingsItem* getPrevious() const = 0;
+  virtual ISettingsItem* getNext() const = 0;
 
-  ~SettingsItem()
-  {
-    delete[] m_name;
-    for(int i=0; i<m_numValues; i++)
-    {
-      delete[] m_values[i];
-    }
-    delete[] m_values;
+  virtual void setPrevious(ISettingsItem* item) = 0;
+  virtual void setNext(ISettingsItem* item) = 0;
+};
 
-  }
+class SettingsItemBase : public ISettingsItem
+{
+public:
+  // IMPORTANT: to reduce memory usage it doesn't copy name. Name pointer should be always available!
+  SettingsItemBase(const char* name);
 
-  const char* getName() const
-  {
-    return m_name;
-  }
+  const char* getName() const override;
 
-  int getCounter() const
-  {
-    return m_counter;
-  }
+protected:
+  ISettingsItem* getPrevious() const override;
+  ISettingsItem* getNext() const override;
 
-  const char* getValue() const
-  {
-    return m_values[m_counter];
-  }
+  void setPrevious(ISettingsItem* item) override;
+  void setNext(ISettingsItem* item) override;
 
-  void increment()
-  {
-    m_counter++;
-    if(m_counter >= m_numValues)
-    {
-      m_counter = 0;
-    }
-  }
+protected:
+  const char* m_name;
 
-  void decrement()
-  {
-    m_counter--;
-    if(m_counter < 0)
-    {
-      m_counter = m_numValues - 1;
-    }
-  }
+  ISettingsItem* m_previous = nullptr;
+  ISettingsItem* m_next = nullptr;
+};
 
-  bool set(int value)
-  {
-    if(value >= 0 && value < m_numValues)
-    {
-      m_counter = value;
-      return true;
-    }
-    return false;
-  }
+class ListSettingsItem : public SettingsItemBase
+{
+public:
+  // IMPORTANT: to reduce memory usage it doesn't copy values. Values pointer and string pointers inside it should be always available!
+  ListSettingsItem(const char* name, int numValues, const char* const* values);
 
-  SettingsItem* getPrevious()
-  {
-    return m_previous;
-  }
+  int getCounter() const override;
+  const char* getValue() const override;
 
-  SettingsItem* getNext()
-  {
-    return m_next;
-  }
+  void increment() override;
+  void decrement() override;
 
-private:
-  int strlenImpl(const char* str)
-  {
-    int counter = 0;
+  bool set(int value) override;
 
-    while(str[counter] != '\0')
-    {
-      counter++;
-    }
-
-    return counter;
-  }
-
-  void strcpyImpl(char* dst, const char* src)
-  {
-    int counter = 0;
-
-    while(src[counter] != '\0')
-    {
-      dst[counter] = src[counter];
-      counter++;
-    }
-
-    dst[counter] = src[counter]; // copy '\0'
-  }
-
-private:
-  char* m_name;
+protected:
   int m_numValues;
-  char** m_values;
+  const char* const* m_values;
   int m_counter;
-
-  SettingsItem* m_previous = nullptr;
-  SettingsItem* m_next = nullptr;
-  
 };
 
 class Settings
 {
 public:
 
-  ~Settings()
-  {
-    SettingsItem* item = m_firstItem;
-    while(item)
-    {
-      SettingsItem* temp = item->getNext();
-      delete item;
-      item = temp;
-    }
-  }
+  ~Settings();
 
-  void addItem(const char* name, int numValues, const char* const* values)
-  {
-    m_numItems++;
+  void addItem(ISettingsItem* item);
 
-    SettingsItem* item = new SettingsItem(name, numValues, values);
-    
-    if(m_numItems == 1)
-    {
-      m_currentItem = item;
-      m_firstItem = item;
-    }
-    else
-    {
-      m_lastItem->m_next = item;
-      item->m_previous = m_lastItem;
-    }
+  void next();
+  void previous();
 
-    m_lastItem = item;
-  }
+  ISettingsItem* getItem(int index) const;
+  ISettingsItem* getCurrentItem() const;
+  int getCurrentItemIndex() const;
 
-  void next()
-  {
-    if(m_numItems == 0)
-    {
-      return;
-    }
-    if(m_currentItem->getNext())
-    {
-      m_currentItem = m_currentItem->getNext();
-      m_currentItemIndex++;
-    }
-    else
-    {
-      m_currentItem = m_firstItem;
-      m_currentItemIndex = 0;
-    }
-  }
+  int size() const;
 
-  void previous()
-  {
-    if(m_numItems == 0)
-    {
-      return;
-    }
-    if(m_currentItem->getPrevious())
-    {
-      m_currentItem = m_currentItem->getPrevious();
-      m_currentItemIndex--;
-    }
-    else
-    {
-      m_currentItem = m_lastItem;
-      m_currentItemIndex = m_numItems - 1;
-    }
-  }
-
-  SettingsItem* getItem(int index) const
-  {
-    if(index >= m_numItems)
-    {
-      return nullptr;
-    }
-    SettingsItem* item = m_firstItem;
-    for(int i=0; i<index; i++)
-    {
-      item = item->getNext();
-    }
-    return item;
-  }
-
-  SettingsItem* getCurrentItem() const
-  {
-    return m_currentItem;
-  }
-
-  int getCurrentItemIndex() const
-  {
-    return m_currentItemIndex;
-  }
-
-  int size() const
-  {
-    return m_numItems;
-  }
-
-  void dumpData(int* data) const
-  {
-    SettingsItem* item = m_firstItem;
-    for(int i=0; i<m_numItems; i++)
-    {
-      data[i] = item->getCounter();
-      item = item->getNext();
-    }
-  }
-
-  void loadData(const int* data)
-  {
-    SettingsItem* item = m_firstItem;
-    for(int i=0; i<m_numItems; i++)
-    {
-      item->set(data[i]);
-      item = item->getNext();
-    }
-  }
+  void dumpData(int* data) const;
+  void loadData(const int* data);
 
 private:
   int m_numItems = 0;
   int m_currentItemIndex = 0; 
 
-  SettingsItem* m_firstItem = nullptr;
-  SettingsItem* m_lastItem = nullptr;
-  SettingsItem* m_currentItem = nullptr;
+  ISettingsItem* m_firstItem = nullptr;
+  ISettingsItem* m_lastItem = nullptr;
+  ISettingsItem* m_currentItem = nullptr;
 
 };
 
