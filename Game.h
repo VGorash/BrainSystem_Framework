@@ -20,29 +20,27 @@ struct GameConfig
     GameTime time;
 };
 
-class Game : public App
+class Game : public IApp
 {
 public:
   Game(const GameConfig& config);
 
-  void init(Hal* hal) override;
-  void tick(Hal* hal) override;
+  void init(IHal& hal) override;
+  void tick(IHal& hal) override;
 
   AppChangeType appChangeNeeded() override;
-  App* getCustomApp() override;
+  IApp* createCustomApp() override;
 
 protected:
-  virtual void processIdle(Hal* hal, GameDisplayInfo& info);
-  virtual void processCountdown(Hal* hal, GameDisplayInfo& info);
-  virtual void processPress(Hal* hal, GameDisplayInfo& info);
-  virtual void processFalstart(Hal* hal, GameDisplayInfo& info);
+  virtual void processIdle(IHal& hal, GameDisplayInfo& info);
+  virtual void processCountdown(IHal& hal, GameDisplayInfo& info);
+  virtual void processPress(IHal& hal, GameDisplayInfo& info);
+  virtual void processFalstart(IHal& hal, GameDisplayInfo& info);
 
-  virtual void start(Hal* hal, GameDisplayInfo& info);
-  virtual void reset(Hal* hal, GameDisplayInfo& info);
-  virtual void press(Hal* hal, GameDisplayInfo& info, int player);
-  virtual void falstart(Hal* hal, GameDisplayInfo& info, int player);
-
-  virtual const char* getName();
+  virtual void start(IHal& hal, GameDisplayInfo& info);
+  virtual void reset(IHal& hal, GameDisplayInfo& info);
+  virtual void press(IHal& hal, GameDisplayInfo& info, int player);
+  virtual void falstart(IHal& hal, GameDisplayInfo& info, int player);
 
 protected:
   GameState m_state = GameState::Idle;
@@ -55,6 +53,8 @@ protected:
   unsigned long m_startTime;
 
   AppChangeType m_changeNeeded = AppChangeType::None;
+
+  const char* m_name;
 };
 
 }

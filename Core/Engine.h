@@ -10,13 +10,16 @@ namespace vgs
 class Engine
 {
 public:
-  Engine(Hal* hal, App* (*initialApp)(), App* (*menuApp)());
+  Engine(IHal* hal, IApp* initialApp, IApp* menuApp);
+  ~Engine();
+
   void tick();
+  void init();
 
 private:
-  Hal* m_hal;
-  App* m_app;
-  App* m_menuApp;
+  IHal* m_hal = nullptr;
+  IApp* m_app = nullptr;
+  IApp* m_menuApp = nullptr;
 };
 
 } //namespace vgs

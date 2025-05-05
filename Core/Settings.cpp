@@ -144,9 +144,9 @@ void Settings::movePrevious()
   }
 }
 
-ISettingsItem* Settings::getCurrentItem() const
+ISettingsItem& Settings::getCurrentItem() const
 {
-  return m_currentItem;
+  return *m_currentItem;
 }
 
 int Settings::getCurrentItemIndex() const

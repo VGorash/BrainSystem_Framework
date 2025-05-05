@@ -21,10 +21,10 @@ public:
     m_periodMode = mode;
   }
 
-  void start(Hal* hal)
+  void start(const IHal& hal)
   {
     m_started = true;
-    m_startTime = hal->getTimeMillis();
+    m_startTime = hal.getTimeMillis();
   }
 
   void stop()
@@ -37,14 +37,14 @@ public:
     return m_started;
   }
 
-  bool tick(Hal* hal)
+  bool tick(IHal& hal)
   {
     if(!m_started)
     {
       return false;
     }
 
-    unsigned long currentTime = hal->getTimeMillis();
+    unsigned long currentTime = hal.getTimeMillis();
 
     if(currentTime - m_startTime >= m_time)
     {

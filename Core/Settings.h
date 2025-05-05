@@ -18,10 +18,10 @@ public:
 
   virtual bool setValueInt(int value) = 0;
 
+protected:
   virtual ISettingsItem* getPrevious() const = 0;
   virtual ISettingsItem* getNext() const = 0;
 
-protected:
   virtual void setPrevious(ISettingsItem* item) = 0;
   virtual void setNext(ISettingsItem* item) = 0;
 };
@@ -35,7 +35,7 @@ public:
   virtual void moveNext() = 0;
   virtual void movePrevious() = 0;
 
-  virtual ISettingsItem* getCurrentItem() const = 0;
+  virtual ISettingsItem& getCurrentItem() const = 0;
   virtual int getCurrentItemIndex() const = 0;
 
   virtual int size() const = 0;
@@ -52,10 +52,9 @@ public:
 
   const char* getName() const override;
 
+protected:
   ISettingsItem* getPrevious() const override;
   ISettingsItem* getNext() const override;
-
-protected:
   void setPrevious(ISettingsItem* item) override;
   void setNext(ISettingsItem* item) override;
 
@@ -97,7 +96,7 @@ public:
   void moveNext() override;
   void movePrevious() override;
 
-  ISettingsItem* getCurrentItem() const override;
+  ISettingsItem& getCurrentItem() const override;
   int getCurrentItemIndex() const override;
 
   int size() const override;

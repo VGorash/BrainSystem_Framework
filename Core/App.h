@@ -13,14 +13,14 @@ enum class AppChangeType
   Custom
 };
 
-class App
+class IApp
 {
 public:
-  virtual void init(Hal* hal) = 0;
-  virtual void tick(Hal* hal) = 0;
+  virtual void init(IHal& hal) = 0;
+  virtual void tick(IHal& hal) = 0;
 
   virtual AppChangeType appChangeNeeded() = 0;
-  virtual App* getCustomApp() = 0;
+  virtual IApp* createCustomApp() = 0;
 };
 
 } // namespace vgs

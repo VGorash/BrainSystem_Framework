@@ -11,18 +11,15 @@ class BrainRingGame : public JeopardyGame
 public:
   BrainRingGame(const GameConfig& config);
 
-  void init(Hal* hal) override;
+  void init(IHal& hal) override;
 
   static GameTime getDefaultTime();
 
 protected:
-  void processPress(Hal* hal, GameDisplayInfo& info) override;
-  void processCountdown(Hal* hal, GameDisplayInfo& info) override;
+  void processPress(IHal& hal, GameDisplayInfo& info) override;
+  void processCountdown(IHal& hal, GameDisplayInfo& info) override;
 
-  void start(Hal* hal, GameDisplayInfo& info) override;
-
-  const char* getName() override;
-  
+  void start(IHal& hal, GameDisplayInfo& info) override;  
 };
 
 } // namespace vgs

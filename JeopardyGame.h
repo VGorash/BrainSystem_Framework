@@ -11,18 +11,16 @@ class JeopardyGame : public Game
 public:
   JeopardyGame(const GameConfig& config);
 
-  void init(Hal* hal) override;
+  void init(IHal& hal) override;
 
   static GameTime getDefaultTime();
 
 protected:
-  void processCountdown(Hal* hal, GameDisplayInfo& info) override;
+  void processCountdown(IHal& hal, GameDisplayInfo& info) override;
 
-  void start(Hal* hal, GameDisplayInfo& info) override;
-  void reset(Hal* hal, GameDisplayInfo& info) override;
-  void press(Hal* hal, GameDisplayInfo& info, int player) override;
-
-  const char* getName() override;
+  void start(IHal& hal, GameDisplayInfo& info) override;
+  void reset(IHal& hal, GameDisplayInfo& info) override;
+  void press(IHal& hal, GameDisplayInfo& info, int player) override;
 
 protected:
   Timer m_gameTimer;

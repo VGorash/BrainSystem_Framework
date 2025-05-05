@@ -8,16 +8,18 @@ JeopardyGame::JeopardyGame(const GameConfig& config) : Game(config)
 }
 
 
-void JeopardyGame::init(Hal* hal)
+void JeopardyGame::init(IHal& hal)
 {
-    if (m_config.time.primary < 0)
-    {
-        m_config.time = getDefaultTime();
-    }
+  m_name = "СВОЯ ИГРА";
+
+  if (m_config.time.primary < 0)
+  {
+    m_config.time = getDefaultTime();
+  }
 }
 
 
-void JeopardyGame::processCountdown(Hal* hal, GameDisplayInfo& info)
+void JeopardyGame::processCountdown(IHal& hal, GameDisplayInfo& info)
 {
   if(m_gameTimer.tick(hal))
   {
@@ -28,8 +30,8 @@ void JeopardyGame::processCountdown(Hal* hal, GameDisplayInfo& info)
 
   if(m_secondsLeft <= 0)
   {
-    hal->sound(HalSound::End);
     reset(hal, info);
+    hal.sound(HalSound::End);
     m_delayTimer.start(hal);
     return;
   }
@@ -38,7 +40,7 @@ void JeopardyGame::processCountdown(Hal* hal, GameDisplayInfo& info)
 
 }
 
-void JeopardyGame::start(Hal* hal, GameDisplayInfo& info)
+void JeopardyGame::start(IHal& hal, GameDisplayInfo& info)
 {
   m_secondsLeft = m_config.time.primary;
   info.gameTime = m_secondsLeft;
@@ -47,23 +49,18 @@ void JeopardyGame::start(Hal* hal, GameDisplayInfo& info)
   Game::start(hal, info);
 }
 
-void JeopardyGame::reset(Hal* hal, GameDisplayInfo& info)
+void JeopardyGame::reset(IHal& hal, GameDisplayInfo& info)
 {
   m_gameTimer.stop();
 
   Game::reset(hal, info);
 }
 
-void JeopardyGame::press(Hal* hal, GameDisplayInfo& info, int player)
+void JeopardyGame::press(IHal& hal, GameDisplayInfo& info, int player)
 {
   m_gameTimer.stop();
 
   Game::press(hal, info, player);
-}
-
-const char* JeopardyGame::getName()
-{
-  return "СВОЯ ИГРА";
 }
 
 GameTime JeopardyGame::getDefaultTime()

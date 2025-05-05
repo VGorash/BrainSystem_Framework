@@ -58,10 +58,11 @@ struct ButtonState
   int player = -1;
 };
 
-class Hal
+class IHal
 {
 public:
   //main functions
+  virtual void init() = 0;
   virtual void tick() = 0;
 
   //buttons
@@ -71,7 +72,7 @@ public:
   virtual void playerLedOn(int player) = 0;
   virtual void playerLedBlink(int player) = 0;
   virtual void signalLedOn() = 0;
-  virtual void ledsOff();
+  virtual void ledsOff() = 0;
 
   //sound
   virtual void sound(HalSound soundType) = 0;
@@ -88,7 +89,6 @@ public:
   //settings
   virtual void saveSettings(const ISettings& settings) = 0;
   virtual void loadSettings(ISettings& settings) = 0;
-
 };
 
 } // namespace vgs
