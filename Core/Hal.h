@@ -25,10 +25,16 @@ enum class GameState
   Falstart
 };
 
+enum class GameMode
+{
+  Normal,
+  Falstart
+};
+
 struct GameDisplayInfo
 {
   const char* name = "";
-  bool falstart_enabled = false;
+  GameMode mode = GameMode::Normal;
   GameState state = GameState::Idle;
   int gameTime = -1;
   int pressTime = -1;

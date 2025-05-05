@@ -9,7 +9,7 @@ Game::Game(const GameConfig& config) : m_config(config)
 
 void Game::init(IHal& hal)
 {
-  m_name = "БЕЗ ОТСЧЕТА";
+  // do nothing
 }
 
 void Game::tick(IHal& hal)
@@ -49,8 +49,8 @@ void Game::tick(IHal& hal)
 
   if(m_displayDirty)
   {
-    info.name = m_name;
-    info.falstart_enabled = m_config.falstartEnabled;
+    info.name = m_config.displayed_name;
+    info.mode = m_config.mode;
     info.state = m_state;
 
     hal.updateDisplay(info);
@@ -64,7 +64,7 @@ void Game::processIdle(IHal& hal, GameDisplayInfo& info)
 
   if(buttonState.player >= 0)
   {
-    if(m_config.falstartEnabled)
+    if(m_config.mode == GameMode::Falstart)
     {
       falstart(hal, info, buttonState.player);
     }

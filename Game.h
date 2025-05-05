@@ -10,14 +10,15 @@ namespace vgs
 
 struct GameTime
 {
-    int primary = -1; // main mode duration
-    int secondary = -1; // second mode duration
+  int primary = -1; // main mode duration
+  int secondary = -1; // second mode duration
 };
 
 struct GameConfig
 {
-    bool falstartEnabled = false;
-    GameTime time;
+  const char* displayed_name; // to reduce memory usage games can skip name saving. This pointer should be always available
+  GameMode mode;
+  GameTime time;
 };
 
 class Game : public IApp
@@ -53,8 +54,6 @@ protected:
   unsigned long m_startTime;
 
   AppChangeType m_changeNeeded = AppChangeType::None;
-
-  const char* m_name;
 };
 
 }

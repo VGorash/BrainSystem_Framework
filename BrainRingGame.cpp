@@ -12,8 +12,6 @@ BrainRingGame::BrainRingGame(const GameConfig& config) : JeopardyGame(config)
 
 void BrainRingGame::init(IHal& hal)
 {
-  m_name = "БРЕЙН-РИНГ";
-
   if (m_config.time.primary < 0 || m_config.time.secondary < 0)
   {
     m_config.time = getDefaultTime();
@@ -27,6 +25,7 @@ void BrainRingGame::processPress(IHal& hal, GameDisplayInfo& info)
   if(buttonState.start)
   {
     reset(hal, info);
+    m_state = GameState::Press;
     start(hal, info);
     return;
   }

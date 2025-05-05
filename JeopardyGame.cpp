@@ -10,8 +10,6 @@ JeopardyGame::JeopardyGame(const GameConfig& config) : Game(config)
 
 void JeopardyGame::init(IHal& hal)
 {
-  m_name = "СВОЯ ИГРА";
-
   if (m_config.time.primary < 0)
   {
     m_config.time = getDefaultTime();
