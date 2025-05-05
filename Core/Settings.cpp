@@ -2,31 +2,6 @@
 
 using namespace vgs;
 
-int strlenImpl(const char* str)
-{
-  int counter = 0;
-
-  while (str[counter] != '\0')
-  {
-    counter++;
-  }
-
-  return counter;
-}
-
-void strcpyImpl(char* dst, const char* src)
-{
-  int counter = 0;
-
-  while (src[counter] != '\0')
-  {
-    dst[counter] = src[counter];
-    counter++;
-  }
-
-  dst[counter] = src[counter]; // copy '\0'
-}
-
 SettingsItemBase::SettingsItemBase(const char* name) : m_name(name)
 {
   
@@ -62,12 +37,12 @@ ListSettingsItem::ListSettingsItem(const char* name, int numValues, const char* 
   
 }
 
-int ListSettingsItem::getCounter() const
+int ListSettingsItem::getValueInt() const
 {
   return m_counter;
 }
 
-const char* ListSettingsItem::getValue() const
+const char* ListSettingsItem::getValueStr() const
 {
   return m_values[m_counter];
 }
@@ -92,7 +67,7 @@ void ListSettingsItem::decrement()
   }
 }
 
-bool ListSettingsItem::set(int value)
+bool ListSettingsItem::setValueInt(int value)
 {
   if(value < 0 || value >= m_numValues)
   {
@@ -133,7 +108,7 @@ void Settings::addItem(ISettingsItem* item)
   m_lastItem = item;
 }
 
-void Settings::next()
+void Settings::moveNext()
 {
   if (m_numItems == 0)
   {
@@ -151,7 +126,7 @@ void Settings::next()
   }
 }
 
-void Settings::previous()
+void Settings::movePrevious()
 {
   if (m_numItems == 0)
   {
@@ -167,23 +142,6 @@ void Settings::previous()
     m_currentItem = m_lastItem;
     m_currentItemIndex = m_numItems - 1;
   }
-}
-
-ISettingsItem* Settings::getItem(int index) const
-{
-  if (index >= m_numItems)
-  {
-    return nullptr;
-  }
-
-  ISettingsItem* item = m_firstItem;
-
-  for (int i = 0; i < index; i++)
-  {
-    item = item->getNext();
-  }
-
-  return item;
 }
 
 ISettingsItem* Settings::getCurrentItem() const
@@ -207,7 +165,7 @@ void Settings::dumpData(int* data) const
 
   for (int i = 0; i < m_numItems; i++)
   {
-    data[i] = item->getCounter();
+    data[i] = item->getValueInt();
     item = item->getNext();
   }
 }
@@ -218,7 +176,7 @@ void Settings::loadData(const int* data)
 
   for (int i = 0; i < m_numItems; i++)
   {
-    item->set(data[i]);
+    item->setValueInt(data[i]);
     item = item->getNext();
   }
 }

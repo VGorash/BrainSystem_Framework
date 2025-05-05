@@ -38,7 +38,7 @@ struct GameDisplayInfo
 
 struct SettingsDisplayInfo
 {
-  const Settings* settings = nullptr;
+  const ISettings* settings = nullptr;
   bool edit_mode = true;
 };
 
@@ -86,8 +86,8 @@ public:
   virtual unsigned long getTimeMillis() = 0;
 
   //settings
-  virtual void saveSettings(const Settings& settings) = 0;
-  virtual void loadSettings(Settings& settings) = 0;
+  virtual void saveSettings(const ISettings& settings) = 0;
+  virtual void loadSettings(ISettings& settings) = 0;
 
 };
 
