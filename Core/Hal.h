@@ -1,8 +1,6 @@
 #ifndef HAL_H
 #define HAL_H
 
-#include "Settings.h"
-
 namespace vgs
 {
 
@@ -42,15 +40,9 @@ struct GameDisplayInfo
   const char* custom = "";
 };
 
-struct SettingsDisplayInfo
-{
-  const ISettings* settings = nullptr;
-  bool edit_mode = true;
-};
-
 struct CustomDisplayInfo
 {
-  const char* name = "";
+  int type = -1;
   const void* data = nullptr;
 };
 
@@ -86,15 +78,10 @@ public:
 
   //display
   virtual void updateDisplay(const GameDisplayInfo& info) = 0;
-  virtual void updateDisplay(const SettingsDisplayInfo& info) = 0;
   virtual void updateDisplay(const CustomDisplayInfo& info) = 0;
 
   //time
   virtual unsigned long getTimeMillis() = 0;
-
-  //settings
-  virtual void saveSettings(const ISettings& settings) = 0;
-  virtual void loadSettings(ISettings& settings) = 0;
 };
 
 } // namespace vgs
