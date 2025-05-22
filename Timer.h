@@ -21,7 +21,7 @@ public:
     m_periodMode = mode;
   }
 
-  void start(const IHal& hal)
+  void start(IHal& hal)
   {
     m_started = true;
     m_startTime = hal.getTimeMillis();
