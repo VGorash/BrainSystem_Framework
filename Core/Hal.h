@@ -37,7 +37,8 @@ struct GameDisplayInfo
   int gameTime = -1;
   int pressTime = -1;
   int player = -1;
-  const char* custom = "";
+  const char* customStr = "";
+  int customInt = 0;
 };
 
 struct CustomDisplayInfo

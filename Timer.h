@@ -37,7 +37,7 @@ public:
     return m_started;
   }
 
-  bool tick(IHal& hal)
+  bool tick(const IHal& hal)
   {
     if(!m_started)
     {
