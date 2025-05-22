@@ -221,13 +221,13 @@
 `periodMode` - периодический режим (автоматический перезапуск после окончания времени)
 
 ### Методы
-- `void tick(const IHal& hal)` - шаг выполнения (передается ссылка на HAL)
+- `void tick(IHal& hal)` - шаг выполнения (передается ссылка на HAL)
 
 - `void setTime(unsigned long time)` - установка времени в миллисекундах
 
 - `void setPeriodMode(bool mode)` - установка периодического режима
 
-- `void start(const IHal& hal)` - запуск таймера (передается ссылка на HAL)
+- `void start(IHal& hal)` - запуск таймера (передается ссылка на HAL)
 
 - `void stop()` - остановка таймера
 
