@@ -14,21 +14,28 @@ void Game::init(IHal& hal)
 
 void Game::tick(IHal& hal)
 {
-  m_delayTimer.tick(hal);
-
-  if(m_delayTimer.isStarted())
-  {
-    return;
-  }
-
-  if(hal.getButtonState().menu)
+  ButtonState buttonState = hal.getButtonState();
+  
+  if(buttonState.menu)
   {
     hal.sound(HalSound::None);
     hal.ledsOff();
     m_changeNeeded = AppChangeType::Menu;
     return;
   }
+  
+  if(m_config.mode == GameMode::Sequence && buttonState.player >= 0)
+  {
+    sequencePress(buttonState.player);
+  }
+  
+  m_delayTimer.tick(hal);
 
+  if(m_delayTimer.isStarted())
+  {
+    return;
+  }
+  
   GameDisplayInfo info;
 
   switch(m_state)
@@ -61,6 +68,11 @@ void Game::tick(IHal& hal)
 void Game::processIdle(IHal& hal, GameDisplayInfo& info)
 {
   ButtonState buttonState = hal.getButtonState();
+  
+  if(m_config.mode == GameMode::Sequence)
+  {
+    m_queue.dequeue(buttonState.player);
+  }
 
   if(buttonState.player >= 0)
   {
@@ -84,6 +96,11 @@ void Game::processIdle(IHal& hal, GameDisplayInfo& info)
 void Game::processCountdown(IHal& hal, GameDisplayInfo& info)
 {
   ButtonState buttonState = hal.getButtonState();
+  
+  if(m_config.mode == GameMode::Sequence)
+  {
+    m_queue.dequeue(buttonState.player);
+  }
   
   if(buttonState.player >= 0)
   {
@@ -151,6 +168,14 @@ void Game::falstart(IHal& hal, GameDisplayInfo& info, int player)
   hal.sound(HalSound::Falstart);
   info.player = player;
   m_delayTimer.start(hal);
+}
+
+void Game::sequencePress(int player)
+{
+  if(!m_queue.check(player))
+  {
+    m_queue.enqueue(player);
+  }
 }
 
 AppChangeType Game::appChangeNeeded()

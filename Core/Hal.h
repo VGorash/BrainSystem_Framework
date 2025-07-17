@@ -26,7 +26,8 @@ enum class GameState
 enum class GameMode
 {
   Normal,
-  Falstart
+  Falstart,
+  Sequence
 };
 
 struct GameDisplayInfo
