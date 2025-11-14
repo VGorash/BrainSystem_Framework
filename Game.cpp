@@ -19,14 +19,14 @@ void Game::tick(IHal& hal)
   if(buttonState.menu)
   {
     hal.sound(HalSound::None);
-    hal.ledsOff();
+    hal.clearSignals();
     m_changeNeeded = AppChangeType::Menu;
     return;
   }
   
   if(m_config.mode == GameMode::Sequence && buttonState.player >= 0)
   {
-    sequencePress(buttonState.player);
+    sequencePress(hal, buttonState.player);
   }
   
   m_delayTimer.tick(hal);
@@ -136,7 +136,8 @@ void Game::start(IHal& hal, GameDisplayInfo& info)
   m_state = GameState::Countdown;
   m_displayDirty = true;
   m_startTime = hal.getTimeMillis();
-  hal.signalLedOn();
+  m_currentPlayer = -1;
+  hal.gameStartSignal();
   hal.sound(HalSound::Start);
 }
 
@@ -144,8 +145,9 @@ void Game::reset(IHal& hal, GameDisplayInfo& info)
 {
   m_state = GameState::Idle;
   m_displayDirty = true;
-  hal.ledsOff();
+  hal.clearSignals();
   hal.sound(HalSound::None);
+  m_currentPlayer = -1;
 }
 
 void Game::press(IHal& hal, GameDisplayInfo& info, int player)
@@ -153,9 +155,10 @@ void Game::press(IHal& hal, GameDisplayInfo& info, int player)
   reset(hal, info);
 
   m_state = GameState::Press;
-  hal.playerLedOn(player);
+  hal.correctPressSignal(player);
   hal.sound(HalSound::Press);
   info.player = player;
+  m_currentPlayer = player;
   m_delayTimer.start(hal);
 }
 
@@ -164,18 +167,47 @@ void Game::falstart(IHal& hal, GameDisplayInfo& info, int player)
   reset(hal, info);
 
   m_state = GameState::Falstart;
-  hal.playerLedBlink(player);
+  hal.falstartPressSignal(player);
   hal.sound(HalSound::Falstart);
   info.player = player;
   m_delayTimer.start(hal);
 }
 
-void Game::sequencePress(int player)
+void Game::sequencePress(IHal& hal, int player)
 {
-  if(!m_queue.check(player))
+  if(!m_queue.check(player) && m_currentPlayer != player)
   {
     m_queue.enqueue(player);
+    updateSequencePending(hal);
   }
+}
+
+void Game::updateSequencePending(IHal& hal)
+{
+    hal.clearSignals();
+
+    hal.correctPressSignal(m_currentPlayer);
+
+    int numPendingPlayers = m_queue.size();
+    int* pendingPlayers = new int[numPendingPlayers];
+    m_queue.toArray(pendingPlayers);
+
+    for (int i = 0; i < numPendingPlayers; i++)
+    {
+      hal.pendingPressSignal(pendingPlayers[i]);
+    }
+
+    if (m_state == GameState::Countdown)
+    {
+      hal.gameStartSignal();
+    }
+
+    if (m_currentPlayer != -1) // secondary press
+    {
+      hal.sound(HalSound::Tick);
+    }
+
+    delete[] pendingPlayers;
 }
 
 AppChangeType Game::appChangeNeeded()

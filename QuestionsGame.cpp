@@ -172,7 +172,7 @@ void QuestionsGame::processPause(IHal& hal, GameDisplayInfo& info)
 void QuestionsGame::exit(IHal& hal)
 {
   hal.sound(HalSound::None);
-  hal.ledsOff();
+  hal.clearSignals();
   m_changeNeeded = AppChangeType::Menu;
 }
 
@@ -193,7 +193,7 @@ void QuestionsGame::restart(IHal& hal, GameDisplayInfo& info)
   m_state = QuestionsGameState::Countdown;
   m_displayDirty = true;
 
-  hal.signalLedOn();
+  hal.gameStartSignal();
   hal.sound(HalSound::Start);
 }
 
@@ -205,7 +205,7 @@ void QuestionsGame::pause(IHal& hal, GameDisplayInfo& info)
 
   info.gameTime =  m_config.time.primary / m_tries;
 
-  hal.ledsOff();
+  hal.clearSignals();
   hal.sound(HalSound::None);
 }
 

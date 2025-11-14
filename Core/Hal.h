@@ -68,11 +68,12 @@ public:
   //buttons
   virtual ButtonState getButtonState() = 0;
 
-  //leds
-  virtual void playerLedOn(int player) = 0;
-  virtual void playerLedBlink(int player) = 0;
-  virtual void signalLedOn() = 0;
-  virtual void ledsOff() = 0;
+  //signals (LEDs)
+  virtual void correctPressSignal(int player) = 0;
+  virtual void falstartPressSignal(int player) = 0;
+  virtual void pendingPressSignal(int player) = 0;
+  virtual void gameStartSignal() = 0;
+  virtual void clearSignals() = 0;
 
   //sound
   virtual void sound(HalSound soundType) = 0;
