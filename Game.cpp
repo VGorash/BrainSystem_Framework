@@ -155,10 +155,19 @@ void Game::press(IHal& hal, GameDisplayInfo& info, int player)
   reset(hal, info);
 
   m_state = GameState::Press;
-  hal.correctPressSignal(player);
+  m_currentPlayer = player;
+
+  if (m_config.mode == GameMode::Sequence)
+  {
+      updateSequencePending(hal);
+  }
+  else
+  {
+      hal.correctPressSignal(player);
+  }
+
   hal.sound(HalSound::Press);
   info.player = player;
-  m_currentPlayer = player;
   m_delayTimer.start(hal);
 }
 
