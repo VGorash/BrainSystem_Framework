@@ -9,7 +9,7 @@ Engine::Engine(IHal* hal, IApp* initialApp, IApp* menuApp): m_hal(hal), m_menuAp
 
 Engine::~Engine()
 {
-  if(m_app != m_menuApp)
+  if(m_app != m_menuApp && m_menuApp)
   {
     delete m_menuApp;
   }
@@ -24,7 +24,7 @@ void Engine::init()
 
   m_app->init(*m_hal);
 
-  if (m_app != m_menuApp)
+  if (m_app != m_menuApp && m_menuApp)
   {
     m_menuApp->init(*m_hal);
   }
